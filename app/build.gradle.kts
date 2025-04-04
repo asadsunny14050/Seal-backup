@@ -47,7 +47,7 @@ android {
         applicationId = "com.junkfood.seal"
         minSdk = 24
         targetSdk = 35
-        versionCode = 200_000_140
+        versionCode = 200_000_150
         check(versionCode == currentVersionCode)
 
         versionName = baseVersionName
@@ -117,7 +117,10 @@ android {
     flavorDimensions += "publishChannel"
 
     productFlavors {
-        create("generic") { dimension = "publishChannel" }
+        create("generic") {
+            dimension = "publishChannel"
+            isDefault = true
+        }
 
         create("githubPreview") {
             dimension = "publishChannel"

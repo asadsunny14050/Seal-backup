@@ -1,4 +1,4 @@
-package com.junkfood.seal.ui.page.downloadv2
+package com.junkfood.seal.ui.page.downloadv2.configure
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -61,7 +61,7 @@ import com.junkfood.seal.ui.component.PlaylistItem
 import com.junkfood.seal.ui.component.SealModalBottomSheet
 import com.junkfood.seal.ui.component.SealModalBottomSheetM2Variant
 import com.junkfood.seal.ui.page.download.PlaylistSelectionDialog
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel.SelectionState
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel.SelectionState
 import com.junkfood.seal.ui.page.settings.format.AudioQuickSettingsDialog
 import com.junkfood.seal.ui.page.settings.format.VideoQuickSettingsDialog
 import com.junkfood.seal.util.AUDIO_CONVERSION_FORMAT
@@ -135,7 +135,7 @@ fun PlaylistSelectionPage(
         ) {
             ConfigurePagePlaylistVariant(
                 modifier = Modifier,
-                downloadType = Video,
+                initialDownloadType = Video,
                 preferences = preferences,
                 onPreferencesUpdate = { preferences = it },
                 onPresetEdit = { type ->
@@ -149,7 +149,10 @@ fun PlaylistSelectionPage(
                 },
                 onDismissRequest = onDismissConfigurationSheet,
                 onDownload = {
-                    taskList.forEach(downloader::enqueue)
+                    val preferences = preferences.copy(extractAudio = it == Audio)
+                    taskList
+                        .map { it.copy(task = it.task.copy(preferences = preferences)) }
+                        .forEach(downloader::enqueue)
                     onDismissConfigurationSheet()
                     onBack()
                 },
@@ -270,8 +273,7 @@ fun PlaylistSelectionPageImpl(
                                         result.originalUrl ?: result.webpageUrl.toString(),
                                     indexList = selectedItems,
                                     playlistResult = result,
-                                    preferences =
-                                        DownloadUtil.DownloadPreferences.createFromPreferences(),
+                                    preferences = DownloadUtil.DownloadPreferences.EMPTY,
                                 )
                             )
                         },
@@ -352,7 +354,7 @@ fun PlaylistSelectionPageImpl(
                     val index = indexFromZero + 1
                     TooltipBox(
                         state = rememberTooltipState(),
-                        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
                         tooltip = { PlainTooltip { Text(text = entry.title ?: index.toString()) } },
                     ) {
                         PlaylistItem(

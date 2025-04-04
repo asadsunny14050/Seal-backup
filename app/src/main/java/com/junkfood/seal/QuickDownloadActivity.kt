@@ -20,13 +20,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.junkfood.seal.ui.common.LocalDarkTheme
 import com.junkfood.seal.ui.common.SettingsProvider
-import com.junkfood.seal.ui.page.downloadv2.Config
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialog
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel.Action
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel.SelectionState
-import com.junkfood.seal.ui.page.downloadv2.FormatPage
-import com.junkfood.seal.ui.page.downloadv2.PlaylistSelectionPage
+import com.junkfood.seal.ui.page.downloadv2.configure.Config
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialog
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel.Action
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel.SelectionState
+import com.junkfood.seal.ui.page.downloadv2.configure.FormatPage
+import com.junkfood.seal.ui.page.downloadv2.configure.PlaylistSelectionPage
 import com.junkfood.seal.ui.theme.SealTheme
 import com.junkfood.seal.util.DownloadUtil
 import com.junkfood.seal.util.PreferenceUtil
@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-private const val TAG = "ShareActivity"
+private const val TAG = "QuickDownloadActivity"
 
 class QuickDownloadActivity : ComponentActivity() {
     private var sharedUrlCached: String = ""

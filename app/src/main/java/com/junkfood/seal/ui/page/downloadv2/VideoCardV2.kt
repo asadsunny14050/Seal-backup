@@ -1,6 +1,7 @@
 package com.junkfood.seal.ui.page.downloadv2
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -21,6 +23,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Error
@@ -39,7 +43,11 @@ import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,12 +60,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.junkfood.seal.R
 import com.junkfood.seal.download.Task
+import com.junkfood.seal.download.Task.DownloadState.Canceled
+import com.junkfood.seal.download.Task.DownloadState.Completed
+import com.junkfood.seal.download.Task.DownloadState.Error
+import com.junkfood.seal.download.Task.DownloadState.FetchingInfo
+import com.junkfood.seal.download.Task.DownloadState.Idle
+import com.junkfood.seal.download.Task.DownloadState.ReadyWithInfo
+import com.junkfood.seal.download.Task.DownloadState.Running
+import com.junkfood.seal.download.Task.RestartableAction
 import com.junkfood.seal.ui.common.AsyncImageImpl
 import com.junkfood.seal.ui.common.LocalDarkTheme
 import com.junkfood.seal.ui.common.LocalFixedColorRoles
+import com.junkfood.seal.ui.common.motion.materialSharedAxisY
+import com.junkfood.seal.ui.component.GreenTonalPalettes
 import com.junkfood.seal.ui.theme.SealTheme
 import com.junkfood.seal.util.toDurationText
 import com.junkfood.seal.util.toFileSizeText
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 
 private val IconButtonSize = 64.dp
 private val IconSize = 36.dp
@@ -131,24 +151,26 @@ fun VideoListItem(
                 fileSizeApprox = fileSizeApprox,
             )
         }
-        Column(modifier = Modifier.weight(1f).padding(horizontal = 12.dp)) {
-            TitleText(
-                modifier = Modifier,
-                title = title,
-                uploader = uploader,
-                contentPadding = PaddingValues(),
-            )
-            stateIndicator?.invoke()
-        }
-        IconButton(
-            onButtonClick,
-            modifier = Modifier.align(Alignment.Bottom).offset(x = 4.dp, y = 4.dp),
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.MoreVert,
-                contentDescription = stringResource(R.string.show_more_actions),
-                modifier = Modifier.size(20.dp),
-            )
+        Box {
+            Column(modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp)) {
+                TitleText(
+                    modifier = Modifier,
+                    title = title,
+                    uploader = uploader,
+                    contentPadding = PaddingValues(),
+                )
+                stateIndicator?.invoke()
+            }
+            IconButton(
+                onButtonClick,
+                modifier = Modifier.align(Alignment.BottomEnd).offset(x = 8.dp, y = 8.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.MoreVert,
+                    contentDescription = stringResource(R.string.show_more_actions),
+                    modifier = Modifier.size(20.dp),
+                )
+            }
         }
     }
 }
@@ -157,14 +179,30 @@ fun VideoListItem(
 @Composable
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun VideoListItemPreview() {
-    SealTheme() {
-        val downloadState =
-            Task.DownloadState.Error(
-                throwable = Throwable(),
-                action = Task.RestartableAction.Download,
+    SealTheme {
+        val fakeStateList =
+            listOf(
+                Running(Job(), "", 0.58f),
+                Error(throwable = Throwable(), RestartableAction.Download),
+                FetchingInfo(Job(), ""),
+                Canceled(RestartableAction.Download),
+                ReadyWithInfo,
+                Idle,
+                Completed(null),
             )
+
+        var downloadState: Task.DownloadState by remember { mutableStateOf(Idle) }
+
+        LaunchedEffect(Unit) {
+            fakeStateList.forEach {
+                delay(2000)
+                downloadState = it
+            }
+        }
+
         Surface {
             VideoListItem(
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 20.dp),
                 thumbnailModel = R.drawable.sample3,
                 title = stringResource(R.string.video_title_sample_text),
                 uploader = stringResource(R.string.video_creator_sample_text),
@@ -172,8 +210,6 @@ private fun VideoListItemPreview() {
                     ListItemStateText(
                         modifier = Modifier.padding(top = 3.dp),
                         downloadState = downloadState,
-                        errorColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
                     )
                 },
             ) {}
@@ -231,12 +267,8 @@ fun VideoCardV2(
 @Preview
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun VideoCardV2Preview() {
-    SealTheme() {
-        val downloadState =
-            Task.DownloadState.Error(
-                throwable = Throwable(),
-                action = Task.RestartableAction.Download,
-            )
+    SealTheme {
+        val downloadState = Error(throwable = Throwable(), action = RestartableAction.Download)
         VideoCardV2(
             thumbnailModel = R.drawable.sample3,
             title = stringResource(R.string.video_title_sample_text),
@@ -352,13 +384,9 @@ fun CardStateIndicator(modifier: Modifier = Modifier, downloadState: Task.Downlo
         color = LabelContainerColor,
         shape = MaterialTheme.shapes.extraSmall,
     ) {
-        val isDarkTheme = LocalDarkTheme.current.isDarkTheme()
-        ListItemStateText(
+        CardItemStateText(
             modifier = Modifier.padding(horizontal = 4.dp),
             downloadState = downloadState,
-            errorColor =
-                MaterialTheme.colorScheme.run { if (isDarkTheme) error else errorContainer },
-            contentColor = Color.White,
         )
     }
 }
@@ -366,22 +394,110 @@ fun CardStateIndicator(modifier: Modifier = Modifier, downloadState: Task.Downlo
 @Composable
 fun ListItemStateText(
     modifier: Modifier = Modifier,
+    isDarkTheme: Boolean = LocalDarkTheme.current.isDarkTheme(),
     downloadState: Task.DownloadState,
-    contentColor: Color = Color.White,
-    errorColor: Color = MaterialTheme.colorScheme.error,
 ) {
+    val sizeModifier = Modifier.size(12.dp)
+
+    AnimatedContent(
+        downloadState,
+        transitionSpec = {
+            materialSharedAxisY(initialOffsetY = { it / 5 }, targetOffsetY = { -it / 5 })
+        },
+        contentKey = { it::class.simpleName },
+    ) { downloadState ->
+        val text =
+            when (downloadState) {
+                is Canceled -> stringResource(R.string.status_canceled)
+                is Completed -> stringResource(R.string.status_downloaded)
+                is Error -> stringResource(R.string.status_error)
+                is FetchingInfo -> stringResource(R.string.status_fetching_video_info)
+                Idle -> stringResource(R.string.status_enqueued)
+                ReadyWithInfo -> stringResource(R.string.status_enqueued)
+                is Running -> {
+                    val progress = downloadState.progress
+                    if (progress >= 0) {
+                        "%.1f %%".format(downloadState.progress * 100)
+                    } else {
+                        stringResource(R.string.status_downloading)
+                    }
+                }
+            }
+        Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+            when (downloadState) {
+                is Canceled -> {
+                    Icon(
+                        imageVector = Icons.Outlined.Cancel,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = sizeModifier,
+                    )
+                }
+                is Completed -> {
+                    val color = GreenTonalPalettes.accent1(if (isDarkTheme) 80.0 else 40.0)
+                    Icon(
+                        imageVector = Icons.Filled.CheckCircle,
+                        contentDescription = null,
+                        tint = color,
+                        modifier = sizeModifier,
+                    )
+                }
+                is Error -> {
+                    Icon(
+                        imageVector = Icons.Rounded.Error,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = sizeModifier,
+                    )
+                }
+                is FetchingInfo,
+                Idle,
+                ReadyWithInfo -> {
+                    CircularProgressIndicator(modifier = sizeModifier, strokeWidth = 2.dp)
+                }
+                is Running -> {
+                    val progress = downloadState.progress
+                    CircularProgressIndicator(
+                        progress = { progress },
+                        modifier = sizeModifier,
+                        strokeWidth = 2.dp,
+                    )
+                }
+            }
+
+            Spacer(Modifier.width(4.dp))
+
+            Text(
+                text = text,
+                modifier = Modifier,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CardItemStateText(modifier: Modifier = Modifier, downloadState: Task.DownloadState) {
+    val errorColor =
+        MaterialTheme.colorScheme.run {
+            if (LocalDarkTheme.current.isDarkTheme()) error else errorContainer
+        }
+    val textStyle = MaterialTheme.typography.labelSmall
+    val contentColor = Color.White
+
     val text =
         when (downloadState) {
-            is Task.DownloadState.Canceled -> R.string.status_canceled
-            is Task.DownloadState.Completed -> R.string.status_downloaded
-            is Task.DownloadState.Error -> R.string.status_error
-            is Task.DownloadState.FetchingInfo -> R.string.status_fetching_video_info
-            Task.DownloadState.Idle -> R.string.status_enqueued
-            Task.DownloadState.ReadyWithInfo -> R.string.status_enqueued
-            is Task.DownloadState.Running -> R.string.status_downloading
+            is Canceled -> R.string.status_canceled
+            is Completed -> R.string.status_downloaded
+            is Error -> R.string.status_error
+            is FetchingInfo -> R.string.status_fetching_video_info
+            Idle -> R.string.status_enqueued
+            ReadyWithInfo -> R.string.status_enqueued
+            is Running -> R.string.status_downloading
         }
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        if (downloadState is Task.DownloadState.Error) {
+        if (downloadState is Error) {
             Icon(
                 imageVector = Icons.Rounded.Error,
                 contentDescription = null,
@@ -393,7 +509,7 @@ fun ListItemStateText(
         Text(
             text = stringResource(id = text),
             modifier = Modifier,
-            style = MaterialTheme.typography.labelSmall,
+            style = textStyle,
             color = contentColor,
         )
     }
@@ -406,25 +522,25 @@ fun ActionButton(
     onActionPost: (UiAction) -> Unit,
 ) =
     when (downloadState) {
-        is Task.DownloadState.Error -> {
+        is Error -> {
             RestartButton(modifier = modifier) { onActionPost(UiAction.Resume) }
         }
-        is Task.DownloadState.Canceled -> {
+        is Canceled -> {
             ResumeButton(modifier = modifier, downloadState.progress) {
                 onActionPost(UiAction.Resume)
             }
         }
-        is Task.DownloadState.Completed -> {
+        is Completed -> {
             PlayVideoButton(modifier = modifier) {
                 onActionPost(UiAction.OpenFile(downloadState.filePath))
             }
         }
-        is Task.DownloadState.FetchingInfo,
-        Task.DownloadState.ReadyWithInfo,
-        Task.DownloadState.Idle -> {
+        is FetchingInfo,
+        ReadyWithInfo,
+        Idle -> {
             ProgressButton(modifier = modifier, progress = -1f) { onActionPost(UiAction.Cancel) }
         }
-        is Task.DownloadState.Running -> {
+        is Running -> {
             ProgressButton(modifier = modifier, progress = downloadState.progress) {
                 onActionPost(UiAction.Cancel)
             }

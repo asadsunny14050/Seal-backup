@@ -38,11 +38,11 @@ import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
 import com.yausername.youtubedl_android.YoutubeDLResponse
-import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.util.Locale
 
 object DownloadUtil {
 
@@ -241,6 +241,61 @@ object DownloadUtil {
         val mergeToMkv: Boolean,
     ) {
         companion object {
+            val EMPTY =
+                DownloadPreferences(
+                    extractAudio = false,
+                    createThumbnail = false,
+                    downloadPlaylist = false,
+                    subdirectoryExtractor = false,
+                    subdirectoryPlaylistTitle = false,
+                    commandDirectory = "",
+                    downloadSubtitle = false,
+                    embedSubtitle = false,
+                    keepSubtitle = false,
+                    subtitleLanguage = "",
+                    autoSubtitle = false,
+                    autoTranslatedSubtitles = false,
+                    convertSubtitle = 0,
+                    concurrentFragments = 0,
+                    sponsorBlock = false,
+                    sponsorBlockCategory = "",
+                    cookies = false,
+                    aria2c = false,
+                    audioFormat = 0,
+                    audioQuality = 0,
+                    convertAudio = false,
+                    formatSorting = false,
+                    sortingFields = "",
+                    audioConvertFormat = 0,
+                    videoFormat = 0,
+                    formatIdString = "",
+                    videoResolution = 0,
+                    privateMode = false,
+                    rateLimit = false,
+                    maxDownloadRate = "",
+                    privateDirectory = false,
+                    cropArtwork = false,
+                    sdcard = false,
+                    sdcardUri = "",
+                    embedThumbnail = false,
+                    videoClips = emptyList(),
+                    splitByChapter = false,
+                    debug = false,
+                    proxy = false,
+                    proxyUrl = "",
+                    newTitle = "",
+                    userAgentString = "",
+                    outputTemplate = "",
+                    useDownloadArchive = false,
+                    embedMetadata = false,
+                    restrictFilenames = false,
+                    supportAv1HardwareDecoding = false,
+                    forceIpv4 = false,
+                    mergeAudioStream = false,
+                    mergeToMkv = false,
+                    useCustomAudioPreset = false,
+                )
+
             fun createFromPreferences(): DownloadPreferences {
                 val downloadSubtitle = SUBTITLE.getBoolean()
                 val embedSubtitle = EMBED_SUBTITLE.getBoolean()
@@ -476,7 +531,12 @@ object DownloadUtil {
                     7 -> "+res"
                     else -> ""
                 }
-            return@run connectWithDelimiter(format, res, delimiter = ",")
+            val sorter = if (videoFormat == FORMAT_COMPATIBILITY) {
+                connectWithDelimiter(format, res, delimiter = ",")
+            } else {
+                connectWithDelimiter(res, format, delimiter = ",")
+            }
+            return@run sorter
         }
 
     private fun YoutubeDLRequest.applyFormatSorter(
@@ -811,6 +871,47 @@ object DownloadUtil {
                     }
             }
         }
+
+    @CheckResult
+    fun executeCustomCommandTask(
+        urlString: String,
+        taskId: String,
+        template: CommandTemplate,
+        preferences: DownloadPreferences,
+        progressCallback: ((Float, Long, String) -> Unit),
+    ): Result<YoutubeDLResponse> {
+        val urlList = urlString.split(Regex("[\n ]")).filter { it.isNotBlank() }
+
+        val request =
+            with(preferences) {
+                YoutubeDLRequest(urlList).apply {
+                    commandDirectory.takeIf { it.isNotEmpty() }?.let { addOption("-P", it) }
+                    addOption("--newline")
+                    if (aria2c) {
+                        enableAria2c()
+                    }
+                    if (useDownloadArchive) {
+                        useDownloadArchive()
+                    }
+                    if (restrictFilenames) {
+                        addOption("--restrict-filenames")
+                    }
+                    addOption(
+                        "--config-locations",
+                        FileUtil.writeContentToFile(template.template, context.getConfigFile())
+                            .absolutePath,
+                    )
+                    if (cookies) {
+                        enableCookies(userAgentString)
+                    }
+                }
+            }
+
+        return runCatching {
+            YoutubeDL.getInstance()
+                .execute(request = request, processId = taskId, callback = progressCallback)
+        }
+    }
 
     suspend fun executeCommandInBackground(
         url: String,

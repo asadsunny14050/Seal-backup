@@ -101,11 +101,11 @@ import com.junkfood.seal.ui.component.ClearButton
 import com.junkfood.seal.ui.component.NavigationBarSpacer
 import com.junkfood.seal.ui.component.OutlinedButtonWithIcon
 import com.junkfood.seal.ui.component.VideoCard
-import com.junkfood.seal.ui.page.downloadv2.Config
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialog
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel.Action
-import com.junkfood.seal.ui.page.downloadv2.FormatPage
+import com.junkfood.seal.ui.page.downloadv2.configure.Config
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialog
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel.Action
+import com.junkfood.seal.ui.page.downloadv2.configure.FormatPage
 import com.junkfood.seal.ui.theme.PreviewThemeLight
 import com.junkfood.seal.ui.theme.SealTheme
 import com.junkfood.seal.util.CELLULAR_DOWNLOAD
@@ -373,7 +373,7 @@ fun DownloadPageImpl(
                 navigationIcon = {
                     TooltipBox(
                         state = rememberTooltipState(),
-                        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
                         tooltip = {
                             PlainTooltip { Text(text = stringResource(id = R.string.settings)) }
                         },
@@ -404,7 +404,7 @@ fun DownloadPageImpl(
                         TooltipBox(
                             state = rememberTooltipState(),
                             positionProvider =
-                                TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                                TooltipDefaults.rememberTooltipPositionProvider(),
                             tooltip = {
                                 PlainTooltip {
                                     Text(text = stringResource(id = R.string.running_tasks))
@@ -427,7 +427,7 @@ fun DownloadPageImpl(
                     }
                     TooltipBox(
                         state = rememberTooltipState(),
-                        positionProvider = TooltipDefaults.rememberPlainTooltipPositionProvider(),
+                        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
                         tooltip = {
                             PlainTooltip {
                                 Text(text = stringResource(id = R.string.downloads_history))

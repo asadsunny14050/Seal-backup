@@ -1,11 +1,11 @@
-package com.junkfood.seal.ui.page.downloadv2
+package com.junkfood.seal.ui.page.downloadv2.configure
 
-import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.VisibilityThreshold
 import androidx.compose.animation.core.animateDpAsState
@@ -17,70 +17,57 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.SettingsSuggest
 import androidx.compose.material.icons.filled.VideoFile
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.AddLink
 import androidx.compose.material.icons.outlined.Cancel
-import androidx.compose.material.icons.outlined.ContentPaste
+import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.DoneAll
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.NewLabel
 import androidx.compose.material.icons.outlined.SettingsSuggest
 import androidx.compose.material.icons.outlined.VideoFile
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TriStateCheckbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -94,8 +81,6 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -108,25 +93,25 @@ import com.junkfood.seal.App
 import com.junkfood.seal.R
 import com.junkfood.seal.ui.common.HapticFeedback.longPressHapticFeedback
 import com.junkfood.seal.ui.common.motion.materialSharedAxisX
-import com.junkfood.seal.ui.component.ClearButton
+import com.junkfood.seal.ui.component.ButtonChip
 import com.junkfood.seal.ui.component.DrawerSheetSubtitle
-import com.junkfood.seal.ui.component.FilledButtonWithIcon
 import com.junkfood.seal.ui.component.OutlinedButtonWithIcon
-import com.junkfood.seal.ui.component.SealDialog
 import com.junkfood.seal.ui.component.SealModalBottomSheet
 import com.junkfood.seal.ui.component.SealModalBottomSheetM2Variant
 import com.junkfood.seal.ui.component.SingleChoiceChip
 import com.junkfood.seal.ui.component.SingleChoiceSegmentedButton
 import com.junkfood.seal.ui.component.VideoFilterChip
-import com.junkfood.seal.ui.page.downloadv2.ActionButton.Download
-import com.junkfood.seal.ui.page.downloadv2.ActionButton.FetchInfo
-import com.junkfood.seal.ui.page.downloadv2.ActionButton.StartTask
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel.Action
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel.SelectionState
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel.SheetState.Configure
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel.SheetState.Error
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel.SheetState.InputUrl
-import com.junkfood.seal.ui.page.downloadv2.DownloadDialogViewModel.SheetState.Loading
+import com.junkfood.seal.ui.page.command.TemplatePickerDialog
+import com.junkfood.seal.ui.page.downloadv2.configure.ActionButton.Download
+import com.junkfood.seal.ui.page.downloadv2.configure.ActionButton.FetchInfo
+import com.junkfood.seal.ui.page.downloadv2.configure.ActionButton.StartTask
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel.Action
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel.SelectionState
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel.SheetState.Configure
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel.SheetState.Error
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel.SheetState.InputUrl
+import com.junkfood.seal.ui.page.downloadv2.configure.DownloadDialogViewModel.SheetState.Loading
+import com.junkfood.seal.ui.page.settings.command.CommandTemplateDialog
 import com.junkfood.seal.ui.page.settings.format.AudioQuickSettingsDialog
 import com.junkfood.seal.ui.page.settings.format.VideoQuickSettingsDialog
 import com.junkfood.seal.ui.page.settings.network.CookiesQuickSettingsDialog
@@ -152,12 +137,12 @@ import com.junkfood.seal.util.PreferenceUtil.getBoolean
 import com.junkfood.seal.util.PreferenceUtil.updateBoolean
 import com.junkfood.seal.util.PreferenceUtil.updateInt
 import com.junkfood.seal.util.SUBTITLE
+import com.junkfood.seal.util.TEMPLATE_ID
 import com.junkfood.seal.util.THUMBNAIL
 import com.junkfood.seal.util.ToastUtil
 import com.junkfood.seal.util.USE_CUSTOM_AUDIO_PRESET
 import com.junkfood.seal.util.VIDEO_FORMAT
 import com.junkfood.seal.util.VIDEO_QUALITY
-import com.junkfood.seal.util.findURLsFromString
 import kotlinx.coroutines.launch
 
 @Composable
@@ -171,60 +156,7 @@ private fun DownloadType.label(): String =
         }
     )
 
-val PreferencesMock =
-    DownloadUtil.DownloadPreferences(
-        extractAudio = false,
-        createThumbnail = false,
-        downloadPlaylist = false,
-        subdirectoryExtractor = false,
-        subdirectoryPlaylistTitle = false,
-        commandDirectory = "",
-        downloadSubtitle = false,
-        embedSubtitle = false,
-        keepSubtitle = false,
-        subtitleLanguage = "",
-        autoSubtitle = false,
-        autoTranslatedSubtitles = false,
-        convertSubtitle = 0,
-        concurrentFragments = 0,
-        sponsorBlock = false,
-        sponsorBlockCategory = "",
-        cookies = false,
-        aria2c = false,
-        audioFormat = 0,
-        audioQuality = 0,
-        convertAudio = false,
-        formatSorting = false,
-        sortingFields = "",
-        audioConvertFormat = 0,
-        videoFormat = 0,
-        formatIdString = "",
-        videoResolution = 0,
-        privateMode = false,
-        rateLimit = false,
-        maxDownloadRate = "",
-        privateDirectory = false,
-        cropArtwork = false,
-        sdcard = false,
-        sdcardUri = "",
-        embedThumbnail = false,
-        videoClips = emptyList(),
-        splitByChapter = false,
-        debug = false,
-        proxy = false,
-        proxyUrl = "",
-        newTitle = "",
-        userAgentString = "",
-        outputTemplate = "",
-        useDownloadArchive = false,
-        embedMetadata = false,
-        restrictFilenames = false,
-        supportAv1HardwareDecoding = false,
-        forceIpv4 = false,
-        mergeAudioStream = false,
-        mergeToMkv = false,
-        useCustomAudioPreset = false,
-    )
+val PreferencesMock = DownloadUtil.DownloadPreferences.EMPTY
 
 data class Config(
     val downloadType: DownloadType? = PreferenceUtil.getDownloadType(),
@@ -234,12 +166,20 @@ data class Config(
             false -> DownloadType.entries - Command
         },
     val useFormatSelection: Boolean = FORMAT_SELECTION.getBoolean(),
+    val savedLinks: Set<String> = PreferenceUtil.getSavedLinks(),
 ) {
     companion object {
-        fun updatePreferences(config: Config) {
-            with(config) {
-                downloadType?.let { PreferenceUtil.updateDownloadType(it) }
-                FORMAT_SELECTION.updateBoolean(useFormatSelection)
+        fun updatePreferences(newValue: Config, oldValue: Config) {
+            with(newValue) {
+                if (downloadType != oldValue.downloadType) {
+                    downloadType?.let { PreferenceUtil.updateDownloadType(it) }
+                }
+                if (useFormatSelection != oldValue.useFormatSelection) {
+                    FORMAT_SELECTION.updateBoolean(useFormatSelection)
+                }
+                if (savedLinks != oldValue.savedLinks) {
+                    PreferenceUtil.updateSavedLinks(savedLinks)
+                }
             }
         }
     }
@@ -420,7 +360,9 @@ private fun DownloadDialogContent(
                         config = config,
                         preferences = preferences,
                         onPresetEdit = onPresetEdit,
-                        onConfigSave = { Config.updatePreferences(it) },
+                        onConfigSave = {
+                            Config.updatePreferences(newValue = it, oldValue = config)
+                        },
                         settingChips = {
                             AdditionalSettings(
                                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -438,7 +380,7 @@ private fun DownloadDialogContent(
                     )
                 } else {
                     ConfigurePagePlaylistVariant(
-                        downloadType = Video,
+                        initialDownloadType = config.downloadType ?: Video,
                         preferences = preferences,
                         onPreferencesUpdate = onPreferencesUpdate,
                         onPresetEdit = onPresetEdit,
@@ -447,7 +389,7 @@ private fun DownloadDialogContent(
                         onActionPost(
                             Action.DownloadWithPreset(
                                 urlList = state.urlList,
-                                preferences = preferences,
+                                preferences = preferences.copy(extractAudio = it == Audio),
                             )
                         )
                     }
@@ -467,7 +409,11 @@ private fun DownloadDialogContent(
             }
 
             InputUrl -> {
-                InputUrlPage(onActionPost = onActionPost)
+                InputUrlPage(
+                    config = config,
+                    onConfigUpdate = { Config.updatePreferences(newValue = it, oldValue = config) },
+                    onActionPost = onActionPost,
+                )
             }
         }
     }
@@ -480,11 +426,14 @@ private fun ErrorPreview() {
     SealModalBottomSheet(
         onDismissRequest = {},
         sheetState =
-            SheetState(
-                skipPartiallyExpanded = true,
-                initialValue = SheetValue.Expanded,
-                density = LocalDensity.current,
-            ),
+            with(LocalDensity.current) {
+                SheetState(
+                    initialValue = SheetValue.Expanded,
+                    skipPartiallyExpanded = true,
+                    velocityThreshold = { 56.dp.toPx() },
+                    positionalThreshold = { 125.dp.toPx() },
+                )
+            },
     ) {
         ErrorPage(
             state =
@@ -530,20 +479,21 @@ fun FormatPage(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)
+/*@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Light", uiMode = Configuration.UI_MODE_NIGHT_NO)*/
 @Composable
 private fun ConfigurePagePreview() {
     SealTheme() {
         SealModalBottomSheet(
             sheetState =
-                SheetState(
-                    skipPartiallyExpanded = true,
-                    LocalDensity.current,
-                    SheetValue.Expanded,
-                    { true },
-                    false,
-                ),
+                with(LocalDensity.current) {
+                    SheetState(
+                        initialValue = SheetValue.Expanded,
+                        skipPartiallyExpanded = true,
+                        velocityThreshold = { 56.dp.toPx() },
+                        positionalThreshold = { 125.dp.toPx() },
+                    )
+                },
             onDismissRequest = {},
             contentPadding = PaddingValues(),
         ) {
@@ -573,9 +523,18 @@ private fun ConfigurePage(
     onConfigSave: (Config) -> Unit,
     onActionPost: (Action) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
     var selectedType by remember(config) { mutableStateOf(config.downloadType) }
     var useFormatSelection by remember(config) { mutableStateOf(config.useFormatSelection) }
     val canProceed = selectedType in config.typeEntries
+
+    var showTemplateSelectionDialog by remember { mutableStateOf(false) }
+    var showTemplateCreatorDialog by remember { mutableStateOf(false) }
+    var showTemplateEditorDialog by remember { mutableStateOf(false) }
+    val template by
+        remember(showTemplateCreatorDialog, showTemplateSelectionDialog, showTemplateEditorDialog) {
+            mutableStateOf(PreferenceUtil.getTemplate())
+        }
 
     LaunchedEffect(selectedType) {
         if (selectedType == Playlist) {
@@ -596,24 +555,71 @@ private fun ConfigurePage(
                 selectedType = selectedType,
                 onSelect = { selectedType = it },
             )
-            DrawerSheetSubtitle(
-                text = stringResource(id = R.string.format_selection),
-                modifier = Modifier,
-            )
-            Preset(
-                modifier = Modifier,
-                preference = preferences,
-                selected = !useFormatSelection,
-                downloadType = selectedType,
-                onClick = { useFormatSelection = false },
-                showEditIcon = !useFormatSelection && selectedType != Playlist,
-                onEdit = { onPresetEdit(selectedType) },
-            )
-            Custom(
-                selected = useFormatSelection,
-                enabled = selectedType != Playlist,
-                onClick = { useFormatSelection = true },
-            )
+            Column(modifier = Modifier.animateContentSize()) {
+                if (selectedType != Command) {
+                    DrawerSheetSubtitle(
+                        text = stringResource(id = R.string.format_selection),
+                        modifier = Modifier,
+                    )
+                    Preset(
+                        modifier = Modifier,
+                        preference = preferences,
+                        selected = !useFormatSelection,
+                        downloadType = selectedType,
+                        onClick = { useFormatSelection = false },
+                        showEditIcon = !useFormatSelection && selectedType != Playlist,
+                        onEdit = { onPresetEdit(selectedType) },
+                    )
+                    Custom(
+                        selected = useFormatSelection,
+                        enabled = selectedType != Playlist,
+                        onClick = { useFormatSelection = true },
+                    )
+                } else {
+                    if (showTemplateSelectionDialog) {
+                        TemplatePickerDialog { showTemplateSelectionDialog = false }
+                    }
+                    if (showTemplateCreatorDialog) {
+                        CommandTemplateDialog(
+                            onDismissRequest = { showTemplateCreatorDialog = false },
+                            confirmationCallback = { scope.launch { TEMPLATE_ID.updateInt(it) } },
+                        )
+                    }
+                    if (showTemplateEditorDialog) {
+                        CommandTemplateDialog(
+                            commandTemplate = template,
+                            onDismissRequest = { showTemplateEditorDialog = false },
+                        )
+                    }
+                    DrawerSheetSubtitle(
+                        text = stringResource(id = R.string.template_selection),
+                        modifier = Modifier,
+                    )
+                    LazyRow(modifier = Modifier) {
+                        item {
+                            ButtonChip(
+                                icon = Icons.Outlined.Code,
+                                label = template.name,
+                                onClick = { showTemplateSelectionDialog = true },
+                            )
+                        }
+                        item {
+                            ButtonChip(
+                                icon = Icons.Outlined.NewLabel,
+                                label = stringResource(id = R.string.new_template),
+                                onClick = { showTemplateCreatorDialog = true },
+                            )
+                        }
+                        item {
+                            ButtonChip(
+                                icon = Icons.Outlined.Edit,
+                                label = stringResource(id = R.string.edit_template, template.name),
+                                onClick = { showTemplateEditorDialog = true },
+                            )
+                        }
+                    }
+                }
+            }
         }
         var expanded by remember { mutableStateOf(false) }
         ExpandableTitle(expanded = expanded, onClick = { expanded = true }) { settingChips() }
@@ -657,7 +663,17 @@ private fun ConfigurePage(
                     )
                 }
             },
-            onTaskStart = {},
+            onTaskStart = {
+                onConfigSave(
+                    config.copy(
+                        useFormatSelection = useFormatSelection,
+                        downloadType = selectedType,
+                    )
+                )
+                onActionPost(
+                    Action.RunCommand(url = url, template = template, preferences = preferences)
+                )
+            },
         )
     }
 }
@@ -665,15 +681,15 @@ private fun ConfigurePage(
 @Composable
 fun ConfigurePagePlaylistVariant(
     modifier: Modifier = Modifier,
-    downloadType: DownloadType,
+    initialDownloadType: DownloadType,
     preferences: DownloadUtil.DownloadPreferences,
     onPreferencesUpdate: (DownloadUtil.DownloadPreferences) -> Unit,
     onPresetEdit: (DownloadType?) -> Unit = {},
     onDismissRequest: () -> Unit,
-    onDownload: () -> Unit,
+    onDownload: (DownloadType) -> Unit,
 ) {
 
-    var selectedType by remember(downloadType) { mutableStateOf(downloadType) }
+    var selectedType by remember(initialDownloadType) { mutableStateOf(initialDownloadType) }
 
     Column {
         Column(modifier = modifier.padding(horizontal = 20.dp)) {
@@ -722,7 +738,7 @@ fun ConfigurePagePlaylistVariant(
             useFormatSelection = false,
             onCancel = onDismissRequest,
             onDownload = {
-                onDownload()
+                onDownload(initialDownloadType)
                 onDismissRequest()
             },
             onFetchInfo = { throw IllegalStateException() },
@@ -906,7 +922,7 @@ private fun SingleChoiceItem(
 }
 
 @Composable
-private fun Header(modifier: Modifier = Modifier, icon: ImageVector, title: String) {
+internal fun Header(modifier: Modifier = Modifier, icon: ImageVector, title: String) {
     Column(modifier = modifier) {
         Icon(
             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -915,7 +931,6 @@ private fun Header(modifier: Modifier = Modifier, icon: ImageVector, title: Stri
         )
         Text(
             text = title,
-            //            stringResource(R.string.settings_before_download),
             style = MaterialTheme.typography.headlineSmall,
             modifier =
                 Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp, bottom = 8.dp),
@@ -1158,247 +1173,5 @@ private fun ActionButtons(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun InputUrlPage(modifier: Modifier = Modifier, onActionPost: (Action) -> Unit) {
-    val clipboardManager = LocalClipboardManager.current
-    val urlList = remember { mutableStateListOf<String>() }
-
-    LaunchedEffect(Unit) {
-        clipboardManager.getText()?.let {
-            urlList.clear()
-            urlList.addAll(findURLsFromString(it.toString()).toSet())
-        }
-    }
-    InputUrlPageImpl(
-        modifier = modifier,
-        urlListFromClipboard = urlList,
-        onActionPost = onActionPost,
-    )
-}
-
-@Preview
-@Composable
-private fun InputUrlPreview() {
-    val urlList = buildList { repeat(20) { add("https://www.example$it.com/") } }
-    InputUrlPageImpl(urlListFromClipboard = urlList) {}
-}
-
-@Composable
-private fun InputUrlPageImpl(
-    modifier: Modifier = Modifier,
-    urlListFromClipboard: List<String>,
-    onActionPost: (Action) -> Unit,
-) {
-
-    var url by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
-
-    Column(modifier = modifier) {
-        Header(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp),
-            title = stringResource(R.string.new_task),
-            icon = Icons.Outlined.Add,
-        )
-        OutlinedTextField(
-            value = url,
-            onValueChange = { url = it },
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp).padding(horizontal = 32.dp),
-            label = { Text(stringResource(R.string.video_url)) },
-            maxLines = 3,
-            trailingIcon = {
-                if (url.isNotEmpty()) {
-                    ClearButton { url = "" }
-                }
-            },
-        )
-
-        LazyRow(
-            modifier = Modifier.padding(top = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = 32.dp),
-        ) {
-            if (urlListFromClipboard.isNotEmpty()) {
-                item {
-                    SuggestionChip(
-                        modifier = Modifier.padding(top = 4.dp),
-                        onClick = { url = urlListFromClipboard.first() },
-                        label = { Text(stringResource(R.string.paste_msg)) },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.ContentPaste,
-                                contentDescription = null,
-                                modifier = Modifier.size(SuggestionChipDefaults.IconSize),
-                            )
-                        },
-                    )
-                }
-            }
-
-            if (urlListFromClipboard.size > 1) {
-                item {
-                    SuggestionChip(
-                        modifier = Modifier.padding(top = 4.dp),
-                        onClick = { showDialog = true },
-                        label = {
-                            Text(
-                                stringResource(
-                                    R.string.select_multiple_link,
-                                    urlListFromClipboard.size,
-                                )
-                            )
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Outlined.AddLink,
-                                contentDescription = null,
-                                modifier = Modifier.size(SuggestionChipDefaults.IconSize),
-                            )
-                        },
-                    )
-                }
-            }
-        }
-
-        Row(
-            modifier =
-                Modifier.align(Alignment.End).padding(top = 24.dp).padding(horizontal = 32.dp)
-        ) {
-            OutlinedButtonWithIcon(
-                modifier = Modifier.padding(horizontal = 12.dp),
-                onClick = { onActionPost(Action.HideSheet) },
-                icon = Icons.Outlined.Cancel,
-                text = stringResource(R.string.cancel),
-            )
-            FilledButtonWithIcon(
-                icon = Icons.AutoMirrored.Outlined.ArrowForward,
-                text = stringResource(R.string.proceed),
-            ) {
-                onActionPost(Action.ProceedWithURLs(listOf(url)))
-            }
-        }
-    }
-    if (showDialog) {
-        URLSelectionDialog(
-            urlListFromClipboard = urlListFromClipboard,
-            onDismissRequest = { showDialog = false },
-            onConfirm = { onActionPost(Action.ProceedWithURLs(it)) },
-        )
-    }
-}
-
-@Composable
-private fun URLSelectionDialog(
-    modifier: Modifier = Modifier,
-    urlListFromClipboard: List<String>,
-    onDismissRequest: () -> Unit,
-    onConfirm: (List<String>) -> Unit,
-) {
-    val indexList =
-        remember(urlListFromClipboard) {
-            mutableStateListOf<Int>().apply { addAll(urlListFromClipboard.indices) }
-        }
-
-    SealDialog(
-        modifier = modifier,
-        onDismissRequest = onDismissRequest,
-        title = { Text(stringResource(R.string.select_multiple_link, urlListFromClipboard.size)) },
-        icon = { Icon(Icons.Outlined.AddLink, null) },
-        confirmButton = {
-            FilledButtonWithIcon(
-                icon = Icons.AutoMirrored.Outlined.ArrowForward,
-                text = stringResource(R.string.proceed),
-                enabled = indexList.isNotEmpty(),
-            ) {
-                onConfirm(indexList.map { urlListFromClipboard[it] })
-                onDismissRequest()
-            }
-        },
-        dismissButton = {
-            OutlinedButton(onClick = onDismissRequest) { Text(stringResource(R.string.cancel)) }
-        },
-        text = {
-            Box(modifier = Modifier.fillMaxSize()) {
-                HorizontalDivider(modifier = Modifier.align(Alignment.TopCenter))
-                LazyColumn(modifier = Modifier.padding(bottom = 48.dp).heightIn(max = 600.dp)) {
-                    itemsIndexed(urlListFromClipboard) { index, url ->
-                        DialogCheckBoxItemVariant(text = url, checked = indexList.contains(index)) {
-                            if (!it) {
-                                indexList -= index
-                            } else {
-                                indexList += index
-                            }
-                        }
-                    }
-                }
-
-                val checkBoxState =
-                    remember(indexList.size) {
-                        if (indexList.isEmpty()) {
-                            ToggleableState.Off
-                        } else if (indexList.size < urlListFromClipboard.size) {
-                            ToggleableState.Indeterminate
-                        } else {
-                            ToggleableState.On
-                        }
-                    }
-                Column(modifier = Modifier.align(Alignment.BottomCenter)) {
-                    HorizontalDivider(modifier = Modifier)
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp).height(48.dp),
-                    ) {
-                        TriStateCheckbox(
-                            state = checkBoxState,
-                            onClick = {
-                                when (checkBoxState) {
-                                    ToggleableState.On -> indexList.clear()
-                                    ToggleableState.Off ->
-                                        indexList.addAll(urlListFromClipboard.indices)
-                                    ToggleableState.Indeterminate -> {
-                                        indexList.clear()
-                                        indexList.addAll(urlListFromClipboard.indices)
-                                    }
-                                }
-                            },
-                        )
-                        Text(stringResource(R.string.select_all))
-                    }
-                }
-            }
-        },
-    )
-}
-
-@Composable
-private fun DialogCheckBoxItemVariant(
-    modifier: Modifier = Modifier,
-    text: String,
-    checked: Boolean,
-    onValueChange: (Boolean) -> Unit,
-) {
-    Row(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .toggleable(value = checked, enabled = true, onValueChange = onValueChange)
-                .padding(horizontal = 12.dp),
-        verticalAlignment = Alignment.Top,
-    ) {
-        Checkbox(
-            modifier = Modifier.clearAndSetSemantics {},
-            checked = checked,
-            onCheckedChange = onValueChange,
-        )
-        Text(
-            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
     }
 }

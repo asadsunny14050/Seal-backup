@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -28,7 +27,6 @@ import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.RestartAlt
 import androidx.compose.material.icons.outlined.VideoFile
-import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -71,6 +69,7 @@ import com.junkfood.seal.ui.common.LocalFixedColorRoles
 import com.junkfood.seal.ui.component.ActionSheetItem
 import com.junkfood.seal.ui.component.ActionSheetPrimaryButton
 import com.junkfood.seal.ui.component.SealModalBottomSheet
+import com.junkfood.seal.ui.page.downloadv2.configure.PreferencesMock
 import com.junkfood.seal.ui.theme.ErrorTonalPalettes
 import com.junkfood.seal.ui.theme.SealTheme
 import com.junkfood.seal.util.Format
@@ -225,39 +224,16 @@ fun Title(imageModel: Any?, title: String, author: String, downloadState: Downlo
             Column(Modifier) {
                 Text(text = title, style = MaterialTheme.typography.titleSmall)
                 Spacer(Modifier.height(2.dp))
-                Text(text = author, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    text = author,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
             Spacer(modifier = Modifier.weight(1f))
-            Spacer(Modifier.height(4.dp))
-            val text =
-                when (downloadState) {
-                    is Canceled -> stringResource(R.string.status_canceled)
-                    is Completed -> stringResource(R.string.status_downloaded)
-                    is Error -> stringResource(R.string.status_error)
-                    is FetchingInfo -> stringResource(R.string.status_fetching_video_info)
-                    Idle -> stringResource(R.string.status_enqueued)
-                    ReadyWithInfo -> stringResource(R.string.status_enqueued)
-                    is Running -> {
-                        val progress = downloadState.progress
-                        if (progress >= 0) {
-                            "%.1f %%".format(downloadState.progress * 100)
-                        } else {
-                            stringResource(R.string.status_downloading)
-                        }
-                    }
-                }
+            Spacer(Modifier.height(3.dp))
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                if (downloadState is Error) {
-                    Icon(
-                        imageVector = Icons.Rounded.Error,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(end = 4.dp).size(12.dp),
-                    )
-                }
-                Text(text = text, modifier = Modifier, style = MaterialTheme.typography.labelSmall)
-            }
+            ListItemStateText(downloadState = downloadState)
         }
     }
 }
@@ -387,11 +363,14 @@ fun LazyListScope.ActionButtons(
 @Composable
 private fun SheetPreview() {
     val sheetState =
-        SheetState(
-            density = LocalDensity.current,
-            skipPartiallyExpanded = false,
-            initialValue = SheetValue.Expanded,
-        )
+        with(LocalDensity.current) {
+            SheetState(
+                initialValue = SheetValue.Expanded,
+                skipPartiallyExpanded = true,
+                velocityThreshold = { 56.dp.toPx() },
+                positionalThreshold = { 125.dp.toPx() },
+            )
+        }
 
     var downloadState: DownloadState by remember { mutableStateOf(Running(Job(), "", 0.58f)) }
 

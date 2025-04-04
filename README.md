@@ -9,35 +9,35 @@
 
 English
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-zh_Hans.md">简体中文</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-zh_Hans.md">简体中文</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-zh_Hant.md">繁體中文</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-zh_Hant.md">繁體中文</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-ar.md">العربية</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-ar.md">العربية</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-pt.md">Portuguese</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-pt.md">Portuguese</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-ua.md">Українська</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-ua.md">Українська</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-th.md">ภาษาไทย</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-th.md">ภาษาไทย</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-fa.md">فارسی</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-fa.md">فارسی</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-it.md">Italiano</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-it.md">Italiano</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-az.md">Azərbaycanca</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-az.md">Azərbaycanca</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-ru.md">Русский</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-ru.md">Русский</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-sr.md">Српски</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-sr.md">Српски</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-ja.md">日本語</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-ja.md">日本語</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-id.md">Indonesia</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-id.md">Indonesia</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-hi.md">हिंदी</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-hi.md">हिंदी</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-bn.md">বাংলা</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-bn.md">বাংলা</a>
 
 
 
@@ -117,7 +117,7 @@ Join our [Telegram Channel](https://t.me/seal_app) or [Matrix Space](https://mat
 
 ## 💖 Sponsors
 
-<p><!-- sponsors --><a href="https://github.com/4kaimar"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;43074832?v&#x3D;4" width="60px" alt="" /></a><a href="https://github.com/zuble"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;67658465?u&#x3D;0b5c5346b4c1d1b60f52befc350110bb629c3e11&amp;v&#x3D;4" width="60px" alt="zuble" /></a><a href="https://github.com/Dannyordaniel"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;166598202?u&#x3D;3f78f2228ca545486c5c1f41b180064a1178265e&amp;v&#x3D;4" width="60px" alt="Daniel " /></a><a href="https://github.com/MasonBitByte"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;84102898?u&#x3D;e6f4ec2eba02e8fa50b7e2ca40edaf79085e15fa&amp;v&#x3D;4" width="60px" alt="Mason K" /></a><a href="https://github.com/Cook-I-T"><img src="https:&#x2F;&#x2F;avatars.githubusercontent.com&#x2F;u&#x2F;55697931?u&#x3D;00d255874d3ae5c61fb52a4227bb47998cdd949a&amp;v&#x3D;4" width="60px" alt="Cook I.T!" /></a><!-- sponsors --></p>
+<p><!-- sponsors --><a href="https://github.com/4kaimar"><img src="https:&#x2F;&#x2F;github.com&#x2F;4kaimar.png" width="60px" alt="User avatar: " /></a><a href="https://github.com/Cook-I-T"><img src="https:&#x2F;&#x2F;github.com&#x2F;Cook-I-T.png" width="60px" alt="User avatar: Cook I.T!" /></a><a href="https://github.com/reallyrealcolby"><img src="https:&#x2F;&#x2F;github.com&#x2F;reallyrealcolby.png" width="60px" alt="User avatar: " /></a><!-- sponsors --></p>
 
 
 Seal will be always free and open source for everyone. If you like it, please consider [sponsoring me](https://github.com/sponsors/JunkFood02)!

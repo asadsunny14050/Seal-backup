@@ -9,33 +9,33 @@
 
 <a href="https://github.com/JunkFoos02/Seal/blob/main/README.md">Inglês</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-zh_Hans.md">简体中文</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-zh_Hans.md">简体中文</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-zh_Hant.md">繁體中文</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-zh_Hant.md">繁體中文</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-ar.md">العربية</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-ar.md">العربية</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
 Português
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-ua.md">Українська</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-ua.md">Українська</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-th.md">ภาษาไทย</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-th.md">ภาษาไทย</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-fa.md">فارسی</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-fa.md">فارسی</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-it.md">Italiano</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-it.md">Italiano</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-az.md">Azərbaycanca</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-az.md">Azərbaycanca</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-ru.md">Русский</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-ru.md">Русский</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-sr.md">Српски</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-sr.md">Српски</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-ja.md">日本語</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-ja.md">日本語</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-id.md">Indonesia</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-id.md">Indonesia</a>
 &nbsp;&nbsp;| &nbsp;&nbsp;
-<a href="https://github.com/JunkFood02/Seal/blob/main/README-hi.md">हिंदी</a>
+<a href="https://github.com/JunkFood02/Seal/blob/main/translations/README-hi.md">हिंदी</a>
 
 
 [![F-Droid](https://img.shields.io/f-droid/v/com.junkfood.seal?color=b4eb12&label=F-Droid&logo=fdroid&logoColor=1f78d2)](https://f-droid.org/en/packages/com.junkfood.seal)
@@ -56,15 +56,15 @@ Português
 ## 📱 Capturas de tela
 
 <div>
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.jpg" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.jpg" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.jpg" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/7.jpg" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/8.jpg" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/9.jpg" width="30%" />
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" width="30%" />
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg" width="30%" />
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg" width="30%" />
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/4.jpg" width="30%" />
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/5.jpg" width="30%" />
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/6.jpg" width="30%" />
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/7.jpg" width="30%" />
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/8.jpg" width="30%" />
+<img src="/fastlane/metadata/android/en-US/images/phoneScreenshots/9.jpg" width="30%" />
 </div>
 
 <br>

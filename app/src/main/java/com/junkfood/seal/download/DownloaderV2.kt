@@ -18,6 +18,7 @@ import com.junkfood.seal.download.Task.DownloadState.ReadyWithInfo
 import com.junkfood.seal.download.Task.DownloadState.Running
 import com.junkfood.seal.download.Task.RestartableAction.Download
 import com.junkfood.seal.download.Task.RestartableAction.FetchInfo
+import com.junkfood.seal.download.Task.TypeInfo
 import com.junkfood.seal.util.DownloadUtil
 import com.junkfood.seal.util.FileUtil
 import com.junkfood.seal.util.NotificationUtil
@@ -93,7 +94,7 @@ internal object FakeDownloaderV2 : DownloaderV2 {
  */
 @OptIn(FlowPreview::class)
 class DownloaderV2Impl(private val appContext: Context) : DownloaderV2, KoinComponent {
-    private val scope = CoroutineScope(SupervisorJob())
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val taskStateMap = mutableStateMapOf<Task, Task.State>()
     private val snapshotFlow = snapshotFlow { taskStateMap.toMap() }
 
@@ -225,7 +226,7 @@ class DownloaderV2Impl(private val appContext: Context) : DownloaderV2, KoinComp
             }
             ?.let { (task, state) ->
                 when (state.downloadState) {
-                    Idle -> task.fetchInfo()
+                    Idle -> task.prepare()
                     ReadyWithInfo -> task.download()
                     else -> {
                         throw IllegalStateException()
@@ -234,9 +235,20 @@ class DownloaderV2Impl(private val appContext: Context) : DownloaderV2, KoinComp
             }
     }
 
+    private fun Task.prepare() {
+        check(downloadState == Idle)
+        if (type is TypeInfo.CustomCommand) {
+            execute()
+        } else {
+            fetchInfo()
+        }
+    }
+
     private fun Task.fetchInfo() {
         check(downloadState == Idle)
         val task = this
+        val taskInfo = task.type
+        val playlistIndex = if (taskInfo is TypeInfo.Playlist) taskInfo.index else null
         scope
             .launch(Dispatchers.Default) {
                 DownloadUtil.fetchVideoInfoFromUrl(
@@ -268,6 +280,10 @@ class DownloaderV2Impl(private val appContext: Context) : DownloaderV2, KoinComp
 
     private fun Task.download() {
         check(downloadState == ReadyWithInfo && info != null)
+        if (type is TypeInfo.CustomCommand) {
+            execute()
+            return
+        }
         scope
             .launch(Dispatchers.Default) {
                 DownloadUtil.downloadVideo(
@@ -373,5 +389,65 @@ class DownloaderV2Impl(private val appContext: Context) : DownloaderV2, KoinComp
                 throw IllegalStateException()
             }
         }
+    }
+
+    /**
+     * Execute a custom command task
+     *
+     * @see Task.TypeInfo.CustomCommand
+     */
+    private fun Task.execute() {
+        check(downloadState == Idle)
+        check(type is TypeInfo.CustomCommand)
+        val template = type.template
+        scope
+            .launch {
+                DownloadUtil.executeCustomCommandTask(url, id, template, preferences) {
+                        progressPercentage,
+                        _,
+                        text ->
+                        val progress = progressPercentage / 100f
+                        when (val preState = downloadState) {
+                            is Running -> {
+                                downloadState =
+                                    preState.copy(progress = progress, progressText = text)
+                                NotificationUtil.makeNotificationForCustomCommand(
+                                    notificationId = notificationId,
+                                    taskId = id,
+                                    progress = progressPercentage.toInt(),
+                                    templateName = template.name,
+                                    taskUrl = url,
+                                    text = text,
+                                )
+                            }
+                            else -> {}
+                        }
+                    }
+                    .onFailure { throwable ->
+                        if (throwable is YoutubeDL.CanceledException) {
+                            return@onFailure
+                        }
+                        downloadState = Error(throwable = throwable, action = Download)
+                        NotificationUtil.notifyError(
+                            title = viewState.title,
+                            textId = R.string.fetch_info_error_msg,
+                            notificationId = notificationId,
+                            report = throwable.stackTraceToString(),
+                        )
+                    }
+                    .onSuccess {
+                        downloadState = Completed(null)
+
+                        val text = appContext.getString(R.string.status_completed)
+
+                        NotificationUtil.finishNotification(
+                            notificationId = notificationId,
+                            title = viewState.title,
+                            text = text,
+                            intent = null,
+                        )
+                    }
+            }
+            .also { downloadState = Running(job = it, taskId = id) }
     }
 }
